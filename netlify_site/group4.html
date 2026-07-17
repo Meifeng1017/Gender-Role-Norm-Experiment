@@ -191,7 +191,7 @@ button { cursor:pointer; }
 
 </head>
 <body>
-<div class="exp-toolbar" id="expToolbar"><strong>实验行为记录</strong><input id="participantId" placeholder="请输入被试编号，如001"><button id="saveParticipant">确认编号</button><button class="secondary" id="exportCsv">完成并提交数据</button><button class="secondary" id="exportJson" style="display:none">导出原始行为日志</button><span class="exp-status" id="expStatus">尚未设置被试编号</span></div>
+<div class="exp-toolbar" id="expToolbar"><input id="participantId" required inputmode="numeric" autocomplete="off" placeholder="请输入被试编号，如001"><button id="saveParticipant">确认编号</button><button class="secondary" id="exportCsv">完成并提交数据</button><button class="secondary" id="exportJson" style="display:none">导出原始行为日志</button><span class="exp-status" id="expStatus" style="display:none"></span></div>
 <!-- 实验组别：第4组；条件：男性化女性 × 外部归因；帖子ID：jiang-2, linran-canteen-2, linran-classroom-female-1 -->
 
 <header class="topbar">
@@ -708,7 +708,7 @@ let expSequence = 0;
 let maxScrollDepth = 0;
 
 function participantId(){
-  return (localStorage.getItem('expParticipantId')||document.getElementById('participantId')?.value||'').trim();
+  return (document.getElementById('participantId')?.value||'').trim();
 }
 function getTargetInfo(postId,targetId){
   if(!postId || !targetId) return {};
@@ -893,7 +893,7 @@ function exportJson(){
 }
 document.getElementById('saveParticipant').addEventListener('click',()=>{
   const id=document.getElementById('participantId').value.trim();
-  if(!id)return toast('请输入被试编号');
+  if(!id){document.getElementById('participantId')?.focus();return toast('请输入被试编号');}
   localStorage.setItem('expParticipantId',id);
   document.getElementById('expStatus').textContent=`被试 ${id} · 已记录 ${expEvents.length} 条`;
   logEvent('participant_confirm','','',{text:id,textLength:id.length});
@@ -1253,5 +1253,7 @@ window.addEventListener('beforeunload',paperFinishSession);
 </script>
 </body>
 </html>
+
+
 
 
