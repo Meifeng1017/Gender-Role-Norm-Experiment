@@ -1,8 +1,9 @@
-const JSZip = require("jszip");
-const { attachmentHeader, csvStore, html, isAuthorized, listAllCsvKeys } = require("./_shared");
+import JSZip from "jszip";
+import { attachmentHeader, csvStore, html, isAuthorized, listAllCsvKeys } from "./_shared.js";
 
-exports.handler = async function handler(event) {
-  const query = event.queryStringParameters || {};
+export default async function handler(request) {
+  const url = new URL(request.url);
+  const query = Object.fromEntries(url.searchParams.entries());
 
   if (!isAuthorized(query)) {
     return html(401, "<h1>需要研究者密码</h1>");
@@ -18,14 +19,12 @@ exports.handler = async function handler(event) {
   }
 
   const buffer = await zip.generateAsync({ type: "nodebuffer" });
-  return {
-    statusCode: 200,
+  return new Response(buffer, {
+    status: 200,
     headers: {
       "content-type": "application/zip",
       "content-disposition": attachmentHeader(`实验数据-${new Date().toISOString().slice(0, 10)}.zip`),
       "cache-control": "no-store"
-    },
-    body: buffer.toString("base64"),
-    isBase64Encoded: true
-  };
+    }
+  });
 };

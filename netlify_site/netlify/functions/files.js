@@ -1,7 +1,8 @@
-const { csvStore, escapeHtml, html, isAuthorized, listAllCsvKeys } = require("./_shared");
+import { csvStore, escapeHtml, html, isAuthorized, listAllCsvKeys } from "./_shared.js";
 
-exports.handler = async function handler(event) {
-  const query = event.queryStringParameters || {};
+export default async function handler(request) {
+  const url = new URL(request.url);
+  const query = Object.fromEntries(url.searchParams.entries());
 
   if (!isAuthorized(query)) {
     return html(401, "<h1>需要研究者密码</h1><p>请在网址后面加上正确的 key。</p>");

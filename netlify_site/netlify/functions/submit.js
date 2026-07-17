@@ -1,24 +1,23 @@
-const { csvStore, json, uniqueCsvKey } = require("./_shared");
+import { csvStore, json, uniqueCsvKey } from "./_shared.js";
 
-exports.handler = async function handler(event) {
-  if (event.httpMethod === "OPTIONS") {
-    return {
-      statusCode: 204,
+export default async function handler(request) {
+  if (request.method === "OPTIONS") {
+    return new Response("", {
+      status: 204,
       headers: {
         "access-control-allow-methods": "POST, OPTIONS",
         "access-control-allow-headers": "content-type"
-      },
-      body: ""
-    };
+      }
+    });
   }
 
-  if (event.httpMethod !== "POST") {
+  if (request.method !== "POST") {
     return json(405, { ok: false, error: "method_not_allowed" });
   }
 
   let payload;
   try {
-    payload = JSON.parse(event.body || "{}");
+    payload = await request.json();
   } catch (error) {
     return json(400, { ok: false, error: "invalid_json" });
   }

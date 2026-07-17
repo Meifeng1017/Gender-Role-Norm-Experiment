@@ -1,4 +1,4 @@
-const { getStore } = require("@netlify/blobs");
+import { getStore } from "@netlify/blobs";
 
 const STORE_NAME = "experiment-csv-files";
 
@@ -7,25 +7,23 @@ function csvStore() {
 }
 
 function json(statusCode, data) {
-  return {
-    statusCode,
+  return new Response(JSON.stringify(data), {
+    status: statusCode,
     headers: {
       "content-type": "application/json; charset=utf-8",
       "cache-control": "no-store"
-    },
-    body: JSON.stringify(data)
-  };
+    }
+  });
 }
 
 function html(statusCode, body) {
-  return {
-    statusCode,
+  return new Response(body, {
+    status: statusCode,
     headers: {
       "content-type": "text/html; charset=utf-8",
       "cache-control": "no-store"
-    },
-    body
-  };
+    }
+  });
 }
 
 function escapeHtml(value) {
@@ -79,7 +77,7 @@ async function listAllCsvKeys(store) {
   return keys;
 }
 
-module.exports = {
+export {
   attachmentHeader,
   csvStore,
   escapeHtml,
