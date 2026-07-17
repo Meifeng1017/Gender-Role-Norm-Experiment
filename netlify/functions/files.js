@@ -17,7 +17,13 @@ export default async function handler(request) {
   const items = files.length
     ? files.map((file) => {
         const href = `/.netlify/functions/download?key=${keyParam}&file=${encodeURIComponent(file)}`;
-        return `<li><a href="${href}">下载</a> ${escapeHtml(file)}</li>`;
+        const deleteAction = `/.netlify/functions/delete?key=${keyParam}`;
+        return `<li><a href="${href}">下载</a> ${escapeHtml(file)}
+          <form class="delete-form" method="post" action="${deleteAction}" onsubmit="return confirm('确定删除这个 CSV 文件吗？删除后不能恢复。');">
+            <input type="hidden" name="file" value="${escapeHtml(file)}">
+            <button type="submit">删除</button>
+          </form>
+        </li>`;
       }).join("")
     : "<li>暂时还没有收到 CSV 文件。</li>";
 
@@ -34,6 +40,8 @@ export default async function handler(request) {
     ul{list-style:none;padding:0;margin:0 0 22px}
     li{padding:9px 0;border-bottom:1px solid #eee;word-break:break-all}
     a{color:#1264d8;text-decoration:none;margin-right:8px}
+    .delete-form{display:inline;margin-left:10px}
+    .delete-form button{border:0;background:transparent;color:#c62828;cursor:pointer;font:inherit;padding:0}
     .zip{display:inline-block;background:#111;color:#fff;padding:9px 14px;border-radius:6px}
   </style>
 </head>
