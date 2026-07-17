@@ -1,0 +1,9 @@
+{
+  "name": "gender-role-norm-experiment",
+  "version": "1.0.0",
+  "private": true,
+  "dependencies": {
+    "@netlify/blobs": "^8.2.0",
+    "jszip": "^3.10.1"
+  }
+}
